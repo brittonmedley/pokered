@@ -9,16 +9,16 @@ ItemPrices:
 	money 1000  ; SAFARI_BALL
 	money 0     ; POKEDEX
 	money 0     ; MOON_STONE
-	money 100   ; ANTIDOTE
-	money 250   ; BURN_HEAL
-	money 250   ; ICE_HEAL
-	money 200   ; AWAKENING
-	money 200   ; PARLYZ_HEAL
-	money 3000  ; FULL_RESTORE
-	money 2500  ; MAX_POTION
-	money 1500  ; HYPER_POTION
-	money 700   ; SUPER_POTION
-	money 300   ; POTION
+	money 0     ; ANTIDOTE
+	money 0     ; BURN_HEAL
+	money 0     ; ICE_HEAL
+	money 0     ; AWAKENING
+	money 0     ; PARLYZ_HEAL
+	money 0     ; FULL_RESTORE
+	money 0     ; MAX_POTION
+	money 0     ; HYPER_POTION
+	money 0     ; SUPER_POTION
+	money 0	    ; POTION
 	money 0     ; BOULDERBADGE
 	money 0     ; CASCADEBADGE
 	money 0     ; THUNDERBADGE
@@ -58,9 +58,9 @@ ItemPrices:
 	money 700   ; MAX_REPEL
 	money 650   ; DIRE_HIT
 	money 10    ; COIN
-	money 200   ; FRESH_WATER
-	money 300   ; SODA_POP
-	money 350   ; LEMONADE
+	money 0     ; FRESH_WATER
+	money 0     ; SODA_POP
+	money 0     ; LEMONADE
 	money 0     ; S_S_TICKET
 	money 0     ; GOLD_TEETH
 	money 500   ; X_ATTACK

@@ -9,7 +9,7 @@ move: macro
 	db \5 percent ; accuracy
 	db \6 ; pp
 endm
-
+;        Name		   Effect					    Dmg Type	  Acc  PP
 	move POUND,        NO_ADDITIONAL_EFFECT,        40, NORMAL,   100, 35
 MoveEnd:
 	move KARATE_CHOP,  NO_ADDITIONAL_EFFECT,        50, NORMAL,   100, 25

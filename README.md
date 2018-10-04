@@ -1,6 +1,6 @@
 # Pokémon Red and Blue
 
-This is a disassembly of Pokémon Red and Blue.
+This is a disassembly of Pokémon Red and Blue with the goal of enforcing rules and rescaling difficuly.
 
 It builds the following roms:
 
@@ -9,8 +9,17 @@ It builds the following roms:
 
 To set up the repository, see [**INSTALL.md**](INSTALL.md).
 
+## Rules
+Origial nuzlocke rules came from [here][nuzlockerules].
 
-## See also
+Summary of rules:
+* When a pokemon faints, it is dead unless the player has a revive. A fainted pokemon is gone forever.
+* All potions and healing items (burn heal, prlyz heal, frz heal, etc. including revives) have been removed from all Pokemarts (are still in map items and hidden locations). 
+* Only the first pokemon in each area can be caught (takes effect after delivering the parcel to OAK). The only exception is if you have already caught that type of pokemon.
+* Blackout (wihtout revive(s)) means the game is over, and the save file is deleted.
+* Every pokemon must be nicknamed.
+
+### See also
 
 * Disassembly of [**Pokémon Yellow**][pokeyellow]
 * Disassembly of [**Pokémon Gold**][pokegold]
@@ -23,6 +32,7 @@ To set up the repository, see [**INSTALL.md**](INSTALL.md).
 * Discord: [**pret**][Discord]
 * irc: **irc.freenode.net** [**#pret**][irc]
 
+[nuzlockerules]: https://bulbapedia.bulbagarden.net/wiki/Nuzlocke_Challenge
 [pokeyellow]: https://github.com/pret/pokeyellow
 [pokegold]: https://github.com/pret/pokegold
 [pokecrystal]: https://github.com/pret/pokecrystal
