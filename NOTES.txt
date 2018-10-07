@@ -1,0 +1,63 @@
+Rules (x - implemented):
+  - When a mon faints, check for revive, if the player doesn't have any,
+    release the mon.
+  x Remove all potions/revives/healing items from PokeMarts.
+  - Can only catch the first mon in each area. Apply Dupes Clause with
+    pokedex?.
+  x Must nickname every caught mon.
+
+
+For first pokemon in area - add 1 bit for each map location in wildPokemon/ in 
+the file pokeblue using the "wXxxYyy" format (use memory 00:DEE5 and on)
+if the bit is 0, the player can use pokeballs, otherwise, have oak tell 
+player its not the tiem to use taht right now.
+
+check items.asm for using pokeballs.
+check engine/wild_encouters.asm for wild encounters spawn.
+
+For check revive - look at get_bag_item_quanity.asm in engine/
+
+
+Example:
+;Suppose player encounters a pokemon on route 4, this code should
+;check to see if an encounter has already happened
+ld a, [wEncounterInArea1]    ; 8b'76543210
+							 ; suppose:
+							 ; bit 0 - Route 1
+							 ; bit 1 - Route 2
+							 ; bit 2 - Route 3
+							 ; bit 3 - Route 4
+							 ; bit 4 - Route 5
+							 ; bit 5 - Route 6
+							 ; bit 6 - Route 7
+							 ; bit 7 - Route 8
+cp a, %00001000 ;check Route 4, check zero flags
+jr z, .EnablePokeBalls ;if a & 00001000 is 0, a pokemon has not been encountered jump to enabling pokeballs
+;if not zero (a pokemon has been encountered)
+ld a, 0
+ld [wEnableUseBall], a ; set wEnableUseBall to 0 (cant catch this pokemon)
+.EnablePokeBalls
+ld a, 0xff; load %11111111
+ld [wEnableUseBall], a ;enable use of pokeballs
+ld a, [wEncounterInArea1]
+or a, %00001000 ;set Route 4 bit to 1
+ld [wEncounterInArea1], a ;replace value in memory
+
+
+NOTEs:
+
+ld a, 0xd6 ;some value
+xor a ; ALWAYS SETS a TO $00
+and a ; RESETS carry
+wCurMap holds a value from constants/map_constants.asm
+	- used for engine/battle/wild_encounters.asm
+	- use to "lock pokeball" if enounter has already happened
+Consider RemoveFaintedPlayerMon in engine/battle/core.asm
+CHANGING engine/battle/core.asm/HandlePlayerFaintedMon
+
+
+
+
+
+
+

@@ -92,6 +92,31 @@ AddItemToInventory_:
 	ld [wItemQuantity], a ; restore the initial value from when the function was called
 	ret
 
+; function that fills wWhichPokemon with the bag index of the itemID in wcf91
+; hl = address of inventory
+;
+FindItemIndex_::
+	ld hl, wNumBagItems
+	inc hl ; wBagItems
+;	ld b, [wcf91]
+	ld d, $00
+.loop
+	ld a, [hli]
+	ld b, a ; b = ID of current item in table
+	ld a, [wcf91] ; a = ID of item being added
+	cp b ; does the current item in the table match the item being added?
+	jp z, .done ; if so, increase the item's quantity
+	inc hl
+	inc d
+	ld a, [hl]
+	cp $ff ; is it the end of the table?
+	jr nz, .loop
+	jp .done ; do nothing? SHOULD NOT HAPPEN
+.done
+	ld a, d
+;	dec d
+	ld [wWhichPokemon],a
+	ret
 ; function to remove an item (in varying quantities) from the player's bag or PC box
 ; INPUT:
 ; hl = address of inventory (either wNumBagItems or wNumBoxItems)

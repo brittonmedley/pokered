@@ -1056,10 +1056,144 @@ PlayBattleVictoryMusic:
 	call PlayMusic
 	jp Delay3
 
+INCLUDE "engine/menu/revive_menu.asm"
+INCLUDE "engine/menu/draw_revive_menu.asm"
+CheckPlayerRevives:
+	xor a
+	ld [wRevives], a ; reset wRevives
+	ld b, REVIVE;%00110101  ; revive
+	call IsItemInBag
+	jr z, .checkMaxRevive ; no revives in bag
+	ld a, [wRevives]
+	set 0, a ; revive in bag -> set a0
+	ld [wRevives], a
+;	jp .checkMaxRevive
+.checkMaxRevive
+ 	ld b, MAX_REVIVE	;%10110101  ; max revive
+	call IsItemInBag
+ 	jp z, .done
+ 	ld a, [wRevives]
+	set 1, a
+	ld [wRevives], a
+.done
+ret
+
 HandlePlayerMonFainted:
 	ld a, 1
 	ld [wInHandlePlayerMonFainted], a
 	call RemoveFaintedPlayerMon
+	call SaveScreenTilesToBuffer1 ;use this screen when putting up new pokemon
+	ld a, [wCurMap]
+	cp OAKS_LAB
+	jp z, .contHPMF
+	call CheckPlayerRevives
+	ld a, [wRevives]
+	cp $00
+	jp nz, .canRevive ; there are revives
+	ld hl, NoRevivesText
+	call PrintText
+	call TextScriptEnd
+	xor a
+	jr z, .noRevivesReleasePokemon
+.releasePokemon
+	ld hl, WantReleaseText
+	call PrintText
+	call TextScriptEnd
+ 	jp .displayYesNoBox
+.displayYesNoBox
+	coord hl, 13, 9
+	lb bc, 10, 14
+	ld a, TWO_OPTION_MENU
+	ld [wTextBoxID], a
+	call DisplayTextBoxID
+	ld a, [wMenuExitMethod]
+	cp CHOSE_SECOND_ITEM ; did the player choose NO?
+	jr z, .canRevive ; if the player chose NO, ask again
+	ld hl, ReleasedText
+	call PrintText
+	call TextScriptEnd
+	and a
+	xor a; set a to $00;
+	ld [wRemoveMonFromBox], a
+	call RemovePokemon
+	jp .contHPMF
+.noRevivesReleasePokemon
+	ld hl, WantReleaseText
+	call PrintText
+	call TextScriptEnd
+	ld hl, ReleasedText
+	call PrintText
+	call TextScriptEnd
+	and a
+	xor a; set a to $00;
+	ld [wRemoveMonFromBox], a
+	call RemovePokemon
+	jp .contHPMF
+.canRevive
+	ld hl, UseRevivePromptText
+	call PrintText
+	call TextScriptEnd
+	jp .displayYesNoBox2
+.displayYesNoBox2
+	coord hl, 13, 9
+	lb bc, 10, 14
+	ld a, TWO_OPTION_MENU
+	ld [wTextBoxID], a
+	call DisplayTextBoxID
+	ld a, [wMenuExitMethod]
+	cp CHOSE_SECOND_ITEM ; did the player choose NO?
+	jp z, .releasePokemon ; if the player chose NO, ask to release the pokemon
+	ld a, [wRevives]
+	cp $01 ; player only has revive
+	jp z, .useRevive
+	cp $02 ; player only has max revive
+	jp z, .useMaxRevive
+; player has both revives //FALLTHROUGH
+; the player chose to heal
+; choose revive or max revive
+;.whichRevive
+	ld hl, UseWhichReviveText
+	call PrintText
+	call TextScriptEnd
+	callab DisplayReviveMenu
+	ld a, [wUsedRevive]
+	cp $00
+	jr z, .canRevive ; did the player hit B
+	jp .chooseNextMon
+.useRevive
+	ld hl, UseReviveText
+	call PrintText
+	call TextScriptEnd
+	jp .displayYesNoBox3
+.displayYesNoBox3
+	coord hl, 13, 9
+	lb bc, 10, 14
+	ld a, TWO_OPTION_MENU
+	ld [wTextBoxID], a
+	call DisplayTextBoxID
+	ld a, [wMenuExitMethod]
+	cp CHOSE_SECOND_ITEM ; did the player choose NO?
+	jr z, .canRevive ; if the player chose NO, ask to release the pokemon
+	call UseRevive
+	jr .chooseNextMon
+.useMaxRevive
+	ld hl, UseMaxReviveText
+	call PrintText
+	call TextScriptEnd
+	jp .displayYesNoBox4
+.displayYesNoBox4
+	coord hl, 13, 9
+	lb bc, 10, 14
+	ld a, TWO_OPTION_MENU
+	ld [wTextBoxID], a
+	call DisplayTextBoxID
+	ld a, [wMenuExitMethod]
+	cp CHOSE_SECOND_ITEM ; did the player choose NO?
+	jp z, .canRevive ; if the player chose NO, ask to revive the pokemon again
+	call UseMaxRevive
+	jr .chooseNextMon
+
+.contHPMF
 	call AnyPartyAlive     ; test if any more mons are alive
 	ld a, d
 	and a
@@ -1078,6 +1212,7 @@ HandlePlayerMonFainted:
 .doUseNextMonDialogue
 	call DoUseNextMonDialogue
 	ret c ; return if the player ran from battle
+.chooseNextMon
 	call ChooseNextMon
 	jp nz, MainInBattleLoop ; if the enemy mon has more than 0 HP, go back to battle loop
 ; the enemy mon has 0 HP
@@ -1092,7 +1227,7 @@ HandlePlayerMonFainted:
 ; resets flags, slides mon's pic down, plays cry, and prints fainted message
 RemoveFaintedPlayerMon:
 	ld a, [wPlayerMonNumber]
-	ld c, a
+	ld c, a                    ; c <- a
 	ld hl, wPartyGainExpFlags
 	ld b, FLAG_RESET
 	predef FlagActionPredef ; clear gain exp flag for fainted mon
@@ -1119,7 +1254,6 @@ RemoveFaintedPlayerMon:
 	call SlideDownFaintedMonPic
 	ld a, $1
 	ld [wBattleResult], a
-
 ; When the player mon and enemy mon faint at the same time and the fact that the
 ; enemy mon has fainted is detected first (e.g. when the player mon knocks out
 ; the enemy mon using a move with recoil and faints due to the recoil), don't
@@ -1127,11 +1261,46 @@ RemoveFaintedPlayerMon:
 	ld a, [wInHandlePlayerMonFainted]
 	and a ; was this called by HandleEnemyMonFainted?
 	ret z ; if so, return
-
 	ld a, [wBattleMonSpecies]
 	call PlayCry
 	ld hl, PlayerMonFaintedText
 	jp PrintText
+DisplayRevivedMessage:
+	ld hl, DisplayRevivedMessageText
+	call PrintText
+	call TextScriptEnd
+	ret
+DisplayRevivedMessageText::
+	TX_FAR _DisplayRevivedMessageText
+	db "@"
+
+UseRevivePromptText::
+	TX_FAR _UseRevivePromptText
+	db "@"
+
+UseReviveText::
+	TX_FAR _UseReviveText
+	db "@"
+
+UseMaxReviveText::
+	TX_FAR _UseMaxReviveText
+	db "@"
+
+NoRevivesText:
+	TX_FAR _NoRevivesText
+	db "@"
+
+UseWhichReviveText:
+	TX_FAR _UseWhichReviveText
+	db"@"
+
+WantReleaseText:
+	TX_FAR _WantReleaseText
+	db "@"
+
+ReleasedText:
+    TX_FAR _ReleasedText
+    db "@"
 
 PlayerMonFaintedText:
 	TX_FAR _PlayerMonFaintedText
@@ -1174,7 +1343,18 @@ UseNextMonText:
 ; choose next player mon to send out
 ; stores whether enemy mon has no HP left in Z flag
 ChooseNextMon:
+	call ErasePartyMenuCursors
+;	call ClearSprites
+	call PlaceMenuCursor
+	xor a
+	ld [wCurrentMenuItem], a
+	call UpdateSprites
+	call UpdatePartyMenuBlkPacket
+	call HandleMenuInput ; zeros a
 	ld a, BATTLE_PARTY_MENU
+	xor a ; NORMAL_PARTY_MENU
+	ld [wPartyMenuTypeOrMessageID], a
+
 	ld [wPartyMenuTypeOrMessageID], a
 	call DisplayPartyMenu
 .checkIfMonChosen
@@ -1236,7 +1416,8 @@ HandlePlayerBlackOut:
 	call PrintText
 	ld a, [wCurMap]
 	cp OAKS_LAB
-	ret z            ; starter battle in oak's lab: don't black out
+	jr z, .firstBattleLose
+;	ret z            ; starter battle in oak's lab: don't black out
 .notSony1Battle
 	ld b, SET_PAL_BATTLE_BLACK
 	call RunPaletteCommand
@@ -1253,6 +1434,15 @@ HandlePlayerBlackOut:
 	call ClearScreen
 	scf
 	ret
+.firstBattleLose
+	ld hl, FirstBattleLoseText
+	call PrintText
+	call UseMaxRevive
+	ret
+
+FirstBattleLoseText:
+	TX_FAR _FirstBattleLoseText
+	db "@"
 
 Sony1WinText:
 	TX_FAR _Sony1WinText

@@ -215,7 +215,7 @@ TextBoxTextAndCoordTable:
 	dw JapanesePokedexMenu
 	db 12,10 ; text coordinates
 
-; note that there is no terminator
+
 
 BuySellQuitText:
 	db   "BUY"

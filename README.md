@@ -10,7 +10,7 @@ It builds the following roms:
 To set up the repository, see [**INSTALL.md**](INSTALL.md).
 
 ## Rules
-Origial nuzlocke rules came from [here][nuzlockerules].
+Original nuzlocke rules came from [here][nuzlockerules].
 
 Summary of rules:
 * When a pokemon faints, it is dead unless the player has a revive. A fainted pokemon is gone forever.

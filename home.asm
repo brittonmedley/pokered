@@ -468,7 +468,7 @@ RedrawPartyMenu::
 	ld hl, RedrawPartyMenu_
 
 DrawPartyMenuCommon::
-	ld b, BANK(RedrawPartyMenu_)
+	ld b, BANK(DrawPartyMenu_)
 	jp Bankswitch
 
 ; prints a pokemon's status condition
@@ -1344,6 +1344,19 @@ RemoveItemFromInventory::
 	ld [MBC1RomBank], a
 	ret
 
+
+FindItemIndex::
+	ld a, [H_LOADEDROMBANK]
+	push af
+	ld a, BANK(FindItemIndex_)
+	ld [H_LOADEDROMBANK], a
+	ld [MBC1RomBank], a
+	call FindItemIndex_
+	pop af
+	ld [H_LOADEDROMBANK], a
+	ld [MBC1RomBank], a
+	ret
+
 ; function to add an item (in varying quantities) to the player's bag or PC box
 ; INPUT:
 ; HL = address of inventory (either wNumBagItems or wNumBoxItems)
@@ -2089,6 +2102,7 @@ DisableWaitingAfterTextDisplay::
 UseItem::
 	jpba UseItem_
 
+
 ; confirms the item toss and then tosses the item
 ; INPUT:
 ; hl = address of inventory (either wNumBagItems or wNumBoxItems)
@@ -2708,6 +2722,22 @@ IsItemInBag::
 	and a
 	ret
 
+GetIndex::
+	ld d, $00
+.loop
+	ld a, [hli]
+	ld b, a ; b = ID of current item in table
+	ld a, [wcf91] ; a = ID of item being added
+	cp b ; does the current item in the table match the item being added?
+	jp z, .done ; if so, decrease the item's quantity
+	inc d
+	inc hl
+	ld a, [hl]
+	cp $ff ; is it the end of the table?
+	jr nz, .loop
+.done
+ret
+
 DisplayPokedex::
 	ld [wd11e], a
 	jpba _DisplayPokedex
@@ -3167,6 +3197,7 @@ LoadScreenTilesFromBuffer2::
 	ld [H_AUTOBGTRANSFERENABLED], a
 	ret
 
+
 ; loads screen tiles stored in wTileMapBackup2 but leaves H_AUTOBGTRANSFERENABLED disabled
 LoadScreenTilesFromBuffer2DisableBGTransfer::
 	xor a
@@ -3176,6 +3207,7 @@ LoadScreenTilesFromBuffer2DisableBGTransfer::
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
 	call CopyData
 	ret
+
 
 SaveScreenTilesToBuffer1::
 	coord hl, 0, 0

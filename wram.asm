@@ -3185,6 +3185,54 @@ wDayCareMonOT::   ds NAME_LENGTH ; da54
 
 wDayCareMon:: box_struct wDayCareMon ; da5f
 
+
+wRevives::
+	ds 1
+wUsedRevive::
+	ds 1
+
+wEncounterInArea1:: ;DiglettsCave
+	ds 1		 ;Mansion
+				 ;MtMoon
+				 ;PokemonTower
+				 ;Powerplant
+				 ;RockTunnel
+				 ;Route1
+				 ;Route10
+wEncounterInArea2:: ;Route11
+	ds 1 		 ;Route12
+				 ;Route13
+				 ;Route14
+				 ;Route15
+				 ;Route16
+				 ;Route17
+				 ;Route18
+wEncounterInArea3:: ;Route19
+	ds 1		 ;Route2
+	             ;Route20
+	             ;Route21
+	             ;Route22
+	             ;Route23
+	             ;Route24
+	             ;Route25
+wEncounterInArea4:: ;Route3
+	ds 1		 ;Route4
+				 ;Route5
+				 ;Route6
+				 ;Route7
+				 ;Route8
+				 ;Route9
+				 ;SafariZone1
+wEncounterInArea5:: ;SafariZone2
+	ds 1		 ;SafariZone3
+				 ;SafariZoneCenter
+				 ;SeafoamIsland
+				 ;VictoryRoad
+				 ;ViridianForrest
+				 ;UNKNOWN - should not be used?
+				 ;UNKNOWN - should not be used?
+
+
 wMainDataEnd::
 
 

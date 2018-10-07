@@ -1,0 +1,11 @@
+DONE: make UseRevive use (not first) party slot: engine/menu/revive_menu.asm
+	  taken from .setCurrentHPToMaxHp in ItemUseMedicine: engine/item/items.asm
+	
+DONE: make UseRevive remove REVIVE from bag: engine/menu/revive_menu.asm
+
+update HandlePlayerBlackOut to end game: engine/battle/core.asm
+	- DONE: change blackout for first battle with GARY as well.
+	
+bug when player swaps party from first party mon to second party mon and the mon 
+faints/is released (defaults to select blank, fainted mon)
+	- can we change this so that when the party menu pops up the first mon is ALWAYS selected?

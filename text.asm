@@ -1099,9 +1099,69 @@ _TrainerDefeatedText::
 
 _PlayerMonFaintedText::
 	TX_RAM wBattleMonNick
-	text ""
-	line "fainted!"
+	text " is "
+	line "about to faint!"
 	prompt
+
+_FirstBattleLoseText::
+	text "OAK: In the fut-"
+	line "ure, if your"
+	cont "#MON faints, "
+	cont "it will run away."
+
+	para "OAK: I will "
+	line "revive your"
+	cont "#MON this"
+	cont "time."
+	done
+
+_UseRevivePromptText::
+	text "Would you like"
+	line "to revive"
+	cont "@"
+	TX_RAM wBattleMonNick
+	text"?"
+	done
+_UseReviveText::
+	text "Use REVIVE?"
+	done
+
+_UseMaxReviveText::
+	text "Use MAX REVIVE?"
+	done
+_NoRevivesText::
+	text "Oh no! <PLAYER>"
+	line "has no revives."
+	prompt
+
+_UseWhichReviveText::
+	text "Use which revive?"
+	done
+
+_DisplayRevivedMessageText::
+	text "@"
+	TX_RAM wBattleMonNick
+	text " is"
+	line "revitalized!"
+	prompt
+
+_WantReleaseText::
+	TX_RAM wBattleMonNick
+	text " will be"
+	line "released."
+	done
+
+_ReleasedText::
+	text "@"
+    TX_RAM wBattleMonNick
+    text " has"
+    line "ran off!"
+
+    para "See you later,"
+    line "@"
+    TX_RAM wBattleMonNick
+    text "..."
+    prompt
 
 _UseNextMonText::
 	text "Use next #MON?"
@@ -1894,9 +1954,9 @@ _LinkCanceledText::
 INCLUDE "text/oakspeech.asm"
 
 _DoYouWantToNicknameText::
-	text "Do you want to"
-	line "give a nickname"
-	cont "to @"
+	text "What would you"
+	line "like to call"
+	cont "@"
 	TX_RAM wcd6d
 	text "?"
 	done
@@ -3190,7 +3250,6 @@ _UsedCutText::
 	text " hacked"
 	line "away with CUT!"
 	prompt
-
 
 SECTION "Pokedex Text", ROMX, BANK[POKEDEX_TEXT]
 

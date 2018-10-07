@@ -3,11 +3,11 @@
 
 ; Viridian
 ViridianCashierText::
-	TX_MART POKE_BALL
+	TX_MART POKE_BALL, REVIVE, MAX_REVIVE
 
 ; Pewter
 PewterCashierText::
-	TX_MART POKE_BALL, ESCAPE_ROPE,
+	TX_MART POKE_BALL, ESCAPE_ROPE
 
 ; Cerulean
 CeruleanCashierText::
@@ -46,7 +46,7 @@ CeladonMart5Clerk2Text::
 
 ; Fuchsia
 FuchsiaCashierText::
-	TX_MART ULTRA_BALL, GREAT_BALL, SUPER_POTION, REVIVE, FULL_HEAL, SUPER_REPEL
+	TX_MART ULTRA_BALL, GREAT_BALL, SUPER_POTION, SUPER_REPEL
 
 ; unused?
 	TX_MART GREAT_BALL

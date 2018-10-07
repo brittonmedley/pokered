@@ -15,6 +15,7 @@ UseItem_:
 	ld l, a
 	jp hl
 
+
 ItemUsePtrTable:
 	dw ItemUseBall       ; MASTER_BALL
 	dw ItemUseBall       ; ULTRA_BALL
@@ -801,6 +802,8 @@ ItemUseVitamin:
 	and a
 	jp nz, ItemUseNotTime
 
+
+
 ItemUseMedicine:
 	ld a, [wPartyCount]
 	and a
@@ -1237,7 +1240,7 @@ ItemUseMedicine:
 	jr .done
 .canceledItemUse
 	xor a
-	ld [wActionResultOrTookBattleTurn], a ; item use failed
+	ld [wActionResultOrTookBattleTurn], a ; item use failed (load $00)
 	pop af
 	pop af
 .done
@@ -2166,6 +2169,7 @@ ItemUsePPRestore:
 	call ItemUseNoEffect
 .itemNotUsed
 	call GBPalWhiteOut
+;	call ClearSprites
 	call RunDefaultPaletteCommand
 	pop af
 	xor a
