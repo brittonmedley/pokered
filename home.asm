@@ -468,7 +468,7 @@ RedrawPartyMenu::
 	ld hl, RedrawPartyMenu_
 
 DrawPartyMenuCommon::
-	ld b, BANK(DrawPartyMenu_)
+	ld b, BANK(RedrawPartyMenu_)
 	jp Bankswitch
 
 ; prints a pokemon's status condition

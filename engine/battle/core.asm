@@ -1213,6 +1213,8 @@ HandlePlayerMonFainted:
 	call DoUseNextMonDialogue
 	ret c ; return if the player ran from battle
 .chooseNextMon
+	xor a ; reset the menu cursor to first pokemon
+	ld [wPartyAndBillsPCSavedMenuItem], a
 	call ChooseNextMon
 	jp nz, MainInBattleLoop ; if the enemy mon has more than 0 HP, go back to battle loop
 ; the enemy mon has 0 HP
@@ -1343,18 +1345,7 @@ UseNextMonText:
 ; choose next player mon to send out
 ; stores whether enemy mon has no HP left in Z flag
 ChooseNextMon:
-	call ErasePartyMenuCursors
-;	call ClearSprites
-	call PlaceMenuCursor
-	xor a
-	ld [wCurrentMenuItem], a
-	call UpdateSprites
-	call UpdatePartyMenuBlkPacket
-	call HandleMenuInput ; zeros a
 	ld a, BATTLE_PARTY_MENU
-	xor a ; NORMAL_PARTY_MENU
-	ld [wPartyMenuTypeOrMessageID], a
-
 	ld [wPartyMenuTypeOrMessageID], a
 	call DisplayPartyMenu
 .checkIfMonChosen
