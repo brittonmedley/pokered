@@ -26,7 +26,7 @@ DoClearSaveDialogue2:
 	ld hl, ClearSaveDataText2
 	call PrintText
 	callba ClearSAV; uncomment this line to go full-savage
-	jp MainMenu
+	jp Init
 
 ClearSaveDataText:
 	TX_FAR _ClearSaveDataText

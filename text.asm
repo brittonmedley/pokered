@@ -1632,7 +1632,7 @@ _ClearSaveDataText2::
 	cont "won't let all "
 	cont "your #MON"
 	cont "die. Bitch."
-	done
+	prompt
 
 _WhichFloorText::
 	text "Which floor do"
