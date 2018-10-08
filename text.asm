@@ -1615,7 +1615,7 @@ _ClearSaveDataText::
 	line "data?"
 	done
 _ClearSaveDataText2::
-	text "&#42RRRERRP (record"
+	text "RRRERRP (record"
 	line "stops)"
 
 	para "Well, you're pr-"

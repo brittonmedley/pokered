@@ -3,7 +3,7 @@
 
 ; Viridian
 ViridianCashierText::
-	TX_MART POKE_BALL, REVIVE, MAX_REVIVE
+	TX_MART POKE_BALL;, REVIVE, MAX_REVIVE ; for testing
 
 ; Pewter
 PewterCashierText::
