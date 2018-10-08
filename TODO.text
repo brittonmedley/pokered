@@ -3,9 +3,14 @@ DONE: make UseRevive use (not first) party slot: engine/menu/revive_menu.asm
 	
 DONE: make UseRevive remove REVIVE from bag: engine/menu/revive_menu.asm
 
-update HandlePlayerBlackOut to end game: engine/battle/core.asm
+DONE: update HandlePlayerBlackOut to end game: engine/battle/core.asm
 	- DONE: change blackout for first battle with GARY as well.
+	- NOTE: right now theres a glitch after the del-save text, I like it.
 	
 DONE: bug when player swaps party from first party mon to second party mon and the mon 
 	  faints/is released (defaults to select blank, fainted mon)
 	  	- can we change this so that when the party menu pops up the first mon is ALWAYS selected? YES 
+
+DONE: added revive to player pc -> engine/oak_speech.asm
+
+implement "one mon per area" rule

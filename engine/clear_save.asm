@@ -18,6 +18,19 @@ DoClearSaveDialogue:
 	callba ClearSAV
 	jp Init
 
+DoClearSaveDialogue2:
+	call ClearScreen
+	call RunDefaultPaletteCommand
+	call LoadFontTilePatterns
+	call LoadTextBoxTilePatterns
+	ld hl, ClearSaveDataText2
+	call PrintText
+	callba ClearSAV; uncomment this line to go full-savage
+	jp MainMenu
+
 ClearSaveDataText:
 	TX_FAR _ClearSaveDataText
+	db "@"
+ClearSaveDataText2:
+	TX_FAR _ClearSaveDataText2
 	db "@"

@@ -1159,7 +1159,7 @@ HandlePlayerMonFainted:
 	ld a, [wUsedRevive]
 	cp $00
 	jr z, .canRevive ; did the player hit B
-	jp .chooseNextMon
+	jp .contHPMF
 .useRevive
 	ld hl, UseReviveText
 	call PrintText
@@ -1175,7 +1175,7 @@ HandlePlayerMonFainted:
 	cp CHOSE_SECOND_ITEM ; did the player choose NO?
 	jr z, .canRevive ; if the player chose NO, ask to release the pokemon
 	call UseRevive
-	jr .chooseNextMon
+	jp .contHPMF
 .useMaxRevive
 	ld hl, UseMaxReviveText
 	call PrintText
@@ -1191,13 +1191,15 @@ HandlePlayerMonFainted:
 	cp CHOSE_SECOND_ITEM ; did the player choose NO?
 	jp z, .canRevive ; if the player chose NO, ask to revive the pokemon again
 	call UseMaxRevive
-	jr .chooseNextMon
-
+	jp .contHPMF
 .contHPMF
 	call AnyPartyAlive     ; test if any more mons are alive
 	ld a, d
 	and a
 	jp z, HandlePlayerBlackOut
+	ld a, [wPartyCount]
+	and a
+	jp z, HandlePlayerBlackOut ; for some reason AnyPartyAlive doesnt work if you have 0 pokemon
 	ld hl, wEnemyMonHP
 	ld a, [hli]
 	or [hl] ; is enemy mon's HP 0?
@@ -1422,7 +1424,9 @@ HandlePlayerBlackOut:
 	ld a, [wd732]
 	res 5, a
 	ld [wd732], a
-	call ClearScreen
+;	call ClearScreen
+	callba DoClearSaveDialogue2
+	jp DisplayTitleScreen
 	scf
 	ret
 .firstBattleLose

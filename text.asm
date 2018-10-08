@@ -1614,6 +1614,25 @@ _ClearSaveDataText::
 	text "Clear all saved"
 	line "data?"
 	done
+_ClearSaveDataText2::
+	text "&#42RRRERRP (record"
+	line "stops)"
+
+	para "Well, you're pr-"
+	line "obably wondering"
+	cont "how you got"
+	cont "here..."
+
+	para "It's a long sto-"
+	line "ry..maybe not SO"
+	cont "long...anyways,"
+	cont "your save data"
+	cont "is gone. Maybe"
+	cont "next time you "
+	cont "won't let all "
+	cont "your #MON"
+	cont "die. Bitch."
+	done
 
 _WhichFloorText::
 	text "Which floor do"
