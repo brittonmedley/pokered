@@ -3033,6 +3033,13 @@ _ItemUseNotTimeText::
 	cont "time to use that! "
 	prompt
 
+_AlreadyHadEncounterText::
+	text "OAK: <PLAYER>!"
+	line "You've already"
+	cont "had an encounter"
+	cont "for this area! "
+	prompt
+
 _ItemUseNotYoursToUseText::
 	text "This isn't yours"
 	line "to use!"

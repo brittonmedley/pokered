@@ -1059,22 +1059,30 @@ PlayBattleVictoryMusic:
 INCLUDE "engine/menu/revive_menu.asm"
 INCLUDE "engine/menu/draw_revive_menu.asm"
 CheckPlayerRevives:
-	xor a
-	ld [wRevives], a ; reset wRevives
+	ResetEvent EVENT_HAS_REVIVE
+	ResetEvent EVENT_HAS_MAX_REVIVE
+	ResetEvent EVENT_HAS_BOTH_REVIVES
+
+;	ld [wRevives], a ; reset wRevives
 	ld b, REVIVE;%00110101  ; revive
 	call IsItemInBag
 	jr z, .checkMaxRevive ; no revives in bag
-	ld a, [wRevives]
-	set 0, a ; revive in bag -> set a0
-	ld [wRevives], a
+	SetEvent EVENT_HAS_REVIVE
+;	ld a, [wRevives]
+;	set 0, a ; revive in bag -> set a0
+;	ld [wRevives], a
 ;	jp .checkMaxRevive
 .checkMaxRevive
  	ld b, MAX_REVIVE	;%10110101  ; max revive
 	call IsItemInBag
  	jp z, .done
- 	ld a, [wRevives]
-	set 1, a
-	ld [wRevives], a
+	SetEvent EVENT_HAS_MAX_REVIVE
+	CheckEvent EVENT_HAS_REVIVE
+	jr z, .done
+	SetEvent EVENT_HAS_BOTH_REVIVES
+; 	ld a, [wRevives]
+;	set 1, a ; revive in bag -> set a1
+;	ld [wRevives], a
 .done
 ret
 
@@ -1087,9 +1095,12 @@ HandlePlayerMonFainted:
 	cp OAKS_LAB
 	jp z, .contHPMF
 	call CheckPlayerRevives
-	ld a, [wRevives]
-	cp $00
-	jp nz, .canRevive ; there are revives
+	CheckEvent EVENT_HAS_REVIVE
+	jr nz, .canRevive
+;	ld a, [wRevives]
+;	cp $00
+	CheckEvent EVENT_HAS_MAX_REVIVE
+	jr nz, .canRevive ; there are revives
 	ld hl, NoRevivesText
 	call PrintText
 	call TextScriptEnd
@@ -1142,24 +1153,45 @@ HandlePlayerMonFainted:
 	call DisplayTextBoxID
 	ld a, [wMenuExitMethod]
 	cp CHOSE_SECOND_ITEM ; did the player choose NO?
-	jp z, .releasePokemon ; if the player chose NO, ask to release the pokemon
-	ld a, [wRevives]
-	cp $01 ; player only has revive
-	jp z, .useRevive
-	cp $02 ; player only has max revive
-	jp z, .useMaxRevive
+	jr z, .releasePokemon ; if the player chose NO, ask to release the pokemon
+;	ld a, [wRevives]
+;	cp $01 ; player only has revive
+;	jp z, .useRevive
+	CheckEvent EVENT_HAS_BOTH_REVIVES
+	jr nz, .whichRevive
+	CheckEvent EVENT_HAS_REVIVE
+	jr nz, .useRevive
+	ld hl, UseMaxReviveText
+	call PrintText
+	call TextScriptEnd
+	jp .displayYesNoBox4
+.displayYesNoBox4
+	coord hl, 13, 9
+	lb bc, 10, 14
+	ld a, TWO_OPTION_MENU
+	ld [wTextBoxID], a
+	call DisplayTextBoxID
+	ld a, [wMenuExitMethod]
+	cp CHOSE_SECOND_ITEM ; did the player choose NO?
+	jr z, .canRevive ; if the player chose NO, ask to revive the pokemon again
+	call UseMaxRevive
+	jr .contHPMF
+;	cp $02 ; player only has max revive
+;	jp z, .useMaxRevive
 ; player has both revives //FALLTHROUGH
 ; the player chose to heal
 ; choose revive or max revive
 ;.whichRevive
+.whichRevive
 	ld hl, UseWhichReviveText
 	call PrintText
 	call TextScriptEnd
 	callab DisplayReviveMenu
-	ld a, [wUsedRevive]
-	cp $00
-	jr z, .canRevive ; did the player hit B
-	jp .contHPMF
+	CheckEvent EVENT_CANCEL_REVIVE
+	;ld a, [wUsedRevive]
+	;cp $00
+	jr nz, .canRevive ; did the player hit B
+	jr .contHPMF
 .useRevive
 	ld hl, UseReviveText
 	call PrintText
@@ -1173,25 +1205,9 @@ HandlePlayerMonFainted:
 	call DisplayTextBoxID
 	ld a, [wMenuExitMethod]
 	cp CHOSE_SECOND_ITEM ; did the player choose NO?
-	jr z, .canRevive ; if the player chose NO, ask to release the pokemon
+	jp z, .canRevive ; if the player chose NO, ask to release the pokemon
 	call UseRevive
-	jp .contHPMF
-.useMaxRevive
-	ld hl, UseMaxReviveText
-	call PrintText
-	call TextScriptEnd
-	jp .displayYesNoBox4
-.displayYesNoBox4
-	coord hl, 13, 9
-	lb bc, 10, 14
-	ld a, TWO_OPTION_MENU
-	ld [wTextBoxID], a
-	call DisplayTextBoxID
-	ld a, [wMenuExitMethod]
-	cp CHOSE_SECOND_ITEM ; did the player choose NO?
-	jp z, .canRevive ; if the player chose NO, ask to revive the pokemon again
-	call UseMaxRevive
-	jp .contHPMF
+;	jp .contHPMF
 .contHPMF
 	call AnyPartyAlive     ; test if any more mons are alive
 	ld a, d
@@ -7072,7 +7088,10 @@ InitBattleCommon:
 	ld [wIsInBattle], a
 	jp _InitBattleCommon
 
+INCLUDE "engine/battle/check_mon_catchable.asm"
+
 InitWildBattle:
+	call CheckMonCatchable
 	ld a, $1
 	ld [wIsInBattle], a
 	call LoadEnemyMonData
@@ -7120,6 +7139,8 @@ InitWildBattle:
 	ld [hStartTileID], a
 	coord hl, 12, 0
 	predef CopyUncompressedPicToTilemap
+
+
 
 ; common code that executes after init battle code specific to trainer or wild battles
 _InitBattleCommon:

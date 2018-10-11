@@ -41,7 +41,24 @@ ViridianCityScript_1900b:
 
 ViridianCityScript_1903d:
 	CheckEvent EVENT_GOT_POKEDEX
-	ret nz
+	jr z, .skipNuzlockeDialogue
+;	ld a, [wEnableNuzlocke]
+;	cp 0
+	CheckEvent EVENT_ENABLE_NUZLOCKE
+	jr nz, .justReturn
+	SetEvent EVENT_ENABLE_NUZLOCKE
+	call EnableAutoTextBoxDrawing
+	ld a, $10
+	ld [hSpriteIndexOrTextID], a
+	call DisplayTextID
+;	ld hl, DisplayNuzlockeInitText
+;	call PrintText
+;	callba TextScriptEnd
+;	ld a, $ff
+;	ld [wEnableNuzlocke], a ; replaced with events
+.justReturn
+	ret
+.skipNuzlockeDialogue
 	ld a, [wYCoord]
 	cp $9
 	ret nz
@@ -57,6 +74,10 @@ ViridianCityScript_1903d:
 	ld a, $3
 	ld [wViridianCityCurScript], a
 	ret
+
+DisplayNuzlockeInitText:
+	TX_FAR _DisplayNuzlockeInitText
+	db"@"
 
 ViridianCityScript1:
 	ld a, [wSpriteStateData1 + $34]
@@ -125,21 +146,22 @@ ViridianCityScript_190cf:
 	ret
 
 ViridianCityTextPointers:
-	dw ViridianCityText1
-	dw ViridianCityText2
-	dw ViridianCityText3
-	dw ViridianCityText4
-	dw ViridianCityText5
-	dw ViridianCityText6
-	dw ViridianCityText7
-	dw ViridianCityText8
-	dw ViridianCityText9
-	dw ViridianCityText10
-	dw MartSignText
-	dw PokeCenterSignText
-	dw ViridianCityText13
-	dw ViridianCityText14
-	dw ViridianCityText15
+	dw ViridianCityText1		; $01
+	dw ViridianCityText2		; $02
+	dw ViridianCityText3		; $03
+	dw ViridianCityText4		; $04
+	dw ViridianCityText5		; $05
+	dw ViridianCityText6		; $06
+	dw ViridianCityText7		; $07
+	dw ViridianCityText8		; $08
+	dw ViridianCityText9		; $09
+	dw ViridianCityText10		; $0a
+	dw MartSignText				; $0b
+	dw PokeCenterSignText		; $0c
+	dw ViridianCityText13		; $0d
+	dw ViridianCityText14		; $0e
+	dw ViridianCityText15		; $0f
+	dw DisplayNuzlockeInitText	; $10
 
 ViridianCityText1:
 	TX_FAR _ViridianCityText1

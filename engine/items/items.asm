@@ -112,6 +112,9 @@ ItemUseBall:
 	dec a
 	jp nz, ThrowBallAtTrainerMon
 
+; Balls cant be used after first encounter
+	CheckEvent EVENT_ENABLE_POKEBALLS
+	jp z, AlreadyHadEncounter
 ; If this is for the old man battle, skip checking if the party & box are full.
 	ld a, [wBattleType]
 	dec a
@@ -1915,7 +1918,7 @@ RodResponse:
 	ld [wRodResponse], a
 
 	dec a ; is there a bite?
-	jr nz, .next
+	jr nz, .next ; no
 	; if yes, store level and species data
 	ld a, 1
 	ld [wMoveMissed], a
@@ -2334,6 +2337,10 @@ ItemUseNotTime:
 	ld hl, ItemUseNotTimeText
 	jr ItemUseFailed
 
+AlreadyHadEncounter:
+	ld hl, AlreadyHadEncounterText
+	jr ItemUseFailed
+
 ItemUseNotYoursToUse:
 	ld hl, ItemUseNotYoursToUseText
 	jr ItemUseFailed
@@ -2371,8 +2378,12 @@ ItemUseNotTimeText:
 	TX_FAR _ItemUseNotTimeText
 	db "@"
 
+AlreadyHadEncounterText:
+	TX_FAR _AlreadyHadEncounterText
+	db "@"
+
 ItemUseNotYoursToUseText:
-	TX_FAR _ItemUseNotYoursToUseText
+	TX_FAR _AlreadyHadEncounterText
 	db "@"
 
 ItemUseNoEffectText:

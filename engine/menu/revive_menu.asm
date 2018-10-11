@@ -47,8 +47,8 @@ RedisplayReviveMenu::
 	and %00000010 ; was the B button pressed?
 	jp nz, GoBack
 	ld a, [wCurrentMenuItem]
-	jr nz, .useMenuItem
-.useMenuItem
+;	jr nz, .useMenuItem
+;.useMenuItem
 	cp 0
 	jp z, UseRevive
 	cp 1
@@ -86,8 +86,8 @@ UseRevive:
 	inc hl
 	ld [hl], a
 	ld [wHPBarNewHP+1], a
-	ld a, $ff
-	ld [wUsedRevive], a
+;	ld a, $ff
+;	ld [wUsedRevive], a
 	ld a, SFX_HEAL_HP
 	call PlaySoundWaitForCurrent
 	ld c, 50
@@ -132,8 +132,8 @@ UseMaxRevive:
 	inc hl
 	ld [hl], a
 	ld [wHPBarNewHP+1], a
-	ld a, $ff
-	ld [wUsedRevive], a
+;	ld a, $ff
+;	ld [wUsedRevive], a
 	ld a, SFX_HEAL_HP
 	call PlaySoundWaitForCurrent
 	ld c, 50
@@ -155,8 +155,9 @@ UseMaxRevive:
 
 
 GoBack:
-	ld a, $00
-	ld [wUsedRevive], a
+;	ld a, $00
+;	ld [wUsedRevive], a
+	SetEvent EVENT_CANCEL_REVIVE
 	call LoadScreenTilesFromBuffer2 ; copy background from wTileMap to wTileMapBackup2
 	call Delay3
 	ret

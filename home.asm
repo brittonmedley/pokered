@@ -100,7 +100,6 @@ SECTION "Header", ROM0 [$104]
 
 
 SECTION "Main", ROM0
-
 Start::
 	cp GBC
 	jr z, .gbc
@@ -1377,6 +1376,8 @@ AddItemToInventory::
 	ld [MBC1RomBank], a
 	pop bc
 	ret
+
+
 
 ; INPUT:
 ; [wListMenuID] = list menu ID
@@ -4614,6 +4615,22 @@ Random::
 
 INCLUDE "home/predef.asm"
 
+
+;INCLUDE "engine/battle/check_mon_catchable.asm"
+;CheckMonCatchable::
+;	push bc
+;	ld a, [H_LOADEDROMBANK]
+;	push af
+;	ld a, BANK(CheckMonCatchable_)
+;	ld [H_LOADEDROMBANK], a
+;	ld [MBC2RomBank], a
+;	call CheckMonCatchable_
+;	pop bc
+;	ld a, b
+;	ld [H_LOADEDROMBANK], a
+;	ld [MBC2RomBank], a
+;	pop bc
+;	ret
 
 UpdateCinnabarGymGateTileBlocks::
 	jpba UpdateCinnabarGymGateTileBlocks_

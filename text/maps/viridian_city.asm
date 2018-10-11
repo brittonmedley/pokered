@@ -1,3 +1,13 @@
+_DisplayNuzlockeInitText::
+	text "OAK: You can now"
+	line "buy # BALLs."
+
+	para "You may ONLY ca-"
+	line "tch the first"
+	cont "#MON in each"
+	cont "area."
+	done
+
 _ViridianCityText1::
 	text "Those # BALLs"
 	line "at your waist!"

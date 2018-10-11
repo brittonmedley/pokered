@@ -1,3 +1,20 @@
+implement "one mon per area" rule
+
+DONE: reach pallet town with pokedex - trigger message and initiate nuzlocke rules
+
+determine if battle has "catchable wild-pokemon"; look at engine/battle/core.asm - InitWildBattle?
+	modify ItemUseBall to check location/lock ball?
+		add a message instead of OAK saying its not time	
+	ld a, [wCurMap]
+	cp OAKS_LAB
+	
+bug when player blacks out from poison
+
+
+
+
+Done section:
+
 DONE: make UseRevive use (not first) party slot: engine/menu/revive_menu.asm
 	  taken from .setCurrentHPToMaxHp in ItemUseMedicine: engine/item/items.asm
 	
@@ -11,6 +28,4 @@ DONE: bug when player swaps party from first party mon to second party mon and t
 	  faints/is released (defaults to select blank, fainted mon)
 	  	- can we change this so that when the party menu pops up the first mon is ALWAYS selected? YES 
 
-DONE: added revive to player pc -> engine/oak_speech.asm
-
-implement "one mon per area" rule
+DONE: added revive to player pc - engine/oak_speech.asm
