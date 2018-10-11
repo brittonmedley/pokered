@@ -1920,6 +1920,7 @@ RodResponse:
 	dec a ; is there a bite?
 	jr nz, .next ; no
 	; if yes, store level and species data
+	call CheckMonCatchable
 	ld a, 1
 	ld [wMoveMissed], a
 	ld a, b ; level
