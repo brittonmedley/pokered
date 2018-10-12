@@ -13,6 +13,10 @@ TryDoWildEncounter:
 	ld a, $1
 	and a
 	ret
+;.CantEncounter2 ; they're the same?
+;	ld a, $1
+;	and a
+;	ret
 .notStandingOnDoorOrWarpTile
 	callab IsPlayerJustOutsideMap
 	jr z, .CantEncounter

@@ -1,29 +1,65 @@
-; the max index of wCurMap is 255, hence 255/8 = 31 bytes for data
+; the max index of wCurMap is 247, hence ceil(247/8) = 31 bytes for data
 ; This means theres a 1-to-1 maping between wCurMap index and
 
 CheckMonCatchable:
-	ResetEvent EVENT_ENABLE_POKEBALLS ; default disable pokeballs
-	ld a, [wCurMap]
-	ld hl, wEncountersEvents
-	ld b, 8
-.loop ; get modulo and increase by quotient
-	cp 8
-	jr c, .done ; if [wCurMap] > 8
-	sub 8
-	inc hl ; wCurMap could be in the next byte
+	CheckEvent EVENT_GOT_POKEDEX ; if player doesnt have pokedex, dont count the encounter
+	ret z
+
+
+	ResetEvent EVENT_FIRST_ENCOUNTER ; default to "didn't have encounter"
+	ResetEvent EVENT_DUPE_MON ; default to "didn't have encounter"
+	ld a, [wCurMap]	; 0 < wCurMap < 247
+	ld hl, wEncounterFlags ; locations 0-7
+.loop
+; if [wCurMap] < 8
+	cp 8 ; compare a, which is [wCurMap], to 8
+	jr c, .done ; if true
+	inc hl
+	sub 8 ; subract 8 from a
+; else continue loop
+	jr .loop
 .done
-	ld b, 1 ; %00000001
+	ld b, 1 ; load %00000001 into b
 .loop2
-	sla b ; b<<1 shift one bit left
+	cp 0 ; compare a to 0
+	jr z, .done2
+	sla b
 	dec a
-	jr z, .done2 ; is a 0?
 	jr .loop2
-;	and b ; A <- A AND B
-.done2
-	ld a, [hl] ; load the encounter flags
-	and a
-	ret nz ; if it was already set a pokemon has been encountered
-	or b ; otherwise set bit high
-	ld [hl], b
-	SetEvent EVENT_ENABLE_POKEBALLS
+.done2 ; b is now something like %00000100 (if A was 2)
+	ld a, [hl] ; A <- (wEncounterFlags + A/8), 1byte
+    and b ; A <- A AND B ; GETs the value of the b-th bit in a
+; if the bit was already high
+    ret nz ; dont enable pokeballs
+; if the bit is low it IS the first encounter
+	ld a, [hl] ; A <- (wEncounterFlags + A/8), 1byte
+    or b ; A <- A or B ; SETs the value of the b-th bit in a
+	push hl
+	push af
+    SetEvent EVENT_FIRST_ENCOUNTER
+
+; now, check for dupe
+	ld a, [wEnemyMonSpecies2]
+	ld [wd11e], a
+; Add the caught Pokémon to the Pokédex.
+	predef IndexToPokedex
+	ld a, [wd11e]
+	dec a
+	ld c, a
+	ld b, FLAG_TEST
+	ld hl, wPokedexOwned
+	predef FlagActionPredef
+	ld a, c
+	and a ; was the Pokémon already in the Pokédex?
+	jr z, .updateEncounterFlags ; if no, can catch the mon
+	SetEvent EVENT_DUPE_MON
+	pop af
+	pop hl
+	ret
+
+
+.updateEncounterFlags
+    pop af
+    pop hl
+    ld [hl], a ; update wEncounterFlags
 	ret

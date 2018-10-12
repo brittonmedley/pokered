@@ -101,6 +101,8 @@ ItemUsePtrTable:
 	dw ItemUsePPRestore  ; ELIXER
 	dw ItemUsePPRestore  ; MAX_ELIXER
 
+
+
 ItemUseBall:
 
 ; Balls can't be used out of battle.
@@ -112,9 +114,16 @@ ItemUseBall:
 	dec a
 	jp nz, ThrowBallAtTrainerMon
 
+
+
 ; Balls cant be used after first encounter
-	CheckEvent EVENT_ENABLE_POKEBALLS
+	CheckEvent EVENT_FIRST_ENCOUNTER
 	jp z, AlreadyHadEncounter
+
+; Balls cant be used if the pokemon is already in the pokedex
+	CheckEvent EVENT_DUPE_MON
+	jp nz, IsDupeMon
+
 ; If this is for the old man battle, skip checking if the party & box are full.
 	ld a, [wBattleType]
 	dec a
@@ -2338,10 +2347,13 @@ ItemUseNotTime:
 	ld hl, ItemUseNotTimeText
 	jr ItemUseFailed
 
+
 AlreadyHadEncounter:
 	ld hl, AlreadyHadEncounterText
 	jr ItemUseFailed
-
+IsDupeMon:
+	ld hl, IsDupeMonText
+	jr ItemUseFailed
 ItemUseNotYoursToUse:
 	ld hl, ItemUseNotYoursToUseText
 	jr ItemUseFailed
@@ -2382,7 +2394,9 @@ ItemUseNotTimeText:
 AlreadyHadEncounterText:
 	TX_FAR _AlreadyHadEncounterText
 	db "@"
-
+IsDupeMonText:
+	TX_FAR _IsDupeMonText
+	db "@"
 ItemUseNotYoursToUseText:
 	TX_FAR _AlreadyHadEncounterText
 	db "@"

@@ -3040,6 +3040,13 @@ _AlreadyHadEncounterText::
 	cont "for this area! "
 	prompt
 
+_IsDupeMonText::
+	text "OAK: <PLAYER>!"
+	line "You've already"
+	cont "caught this"
+	cont "#MON! "
+	prompt
+
 _ItemUseNotYoursToUseText::
 	text "This isn't yours"
 	line "to use!"

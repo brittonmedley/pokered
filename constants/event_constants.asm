@@ -2566,7 +2566,8 @@ const_value = 0
 	const EVENT_HAS_BOTH_REVIVES
 	const EVENT_CANCEL_REVIVE
 	const EVENT_ENABLE_NUZLOCKE;first byte of the 5 added bytes (in wram)
-	const EVENT_ENABLE_POKEBALLS;	must be set to use pokeballs
+	const EVENT_FIRST_ENCOUNTER;	must be set to use pokeballs
+	const EVENT_DUPE_MON
 ;	const EVENT_ENCOUNTER_DIGLETTS_CAVE
 ;	const EVENT_ENCOUNTER_MANSION
 ;	const EVENT_ENCOUNTER_MT_MOON ; for all 3

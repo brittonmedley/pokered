@@ -3186,7 +3186,7 @@ wDayCareMonOT::   ds NAME_LENGTH ; da54
 wDayCareMon:: box_struct wDayCareMon ; da5f
 
 
-wEncountersEvents::
+wEncounterFlags::
 	ds 31
 ;wUsedRevive::
 ;	ds 1

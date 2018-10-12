@@ -7088,10 +7088,10 @@ InitBattleCommon:
 	ld [wIsInBattle], a
 	jp _InitBattleCommon
 
-INCLUDE "engine/battle/check_mon_catchable.asm"
 
+INCLUDE "engine/battle/check_mon_catchable.asm"
 InitWildBattle:
-	call CheckMonCatchable
+	call CheckMonCatchable ;set events for first encounter or dupe mon
 	ld a, $1
 	ld [wIsInBattle], a
 	call LoadEnemyMonData
