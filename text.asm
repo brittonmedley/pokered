@@ -1145,22 +1145,46 @@ _DisplayRevivedMessageText::
 	line "revitalized!"
 	prompt
 
-_WantReleaseText::
+_WillReleaseText::
 	TX_RAM wBattleMonNick
-	text " will be"
-	line "released."
-	done
+	text " is too"
+	line "weak and will"
+	cont "be released."
+	prompt
+
+_WillReleasePoisonText::
+	TX_RAM wcd6d
+	text " is too"
+	line "weak from poison"
+	cont "and will be"
+	cont "released."
+	prompt
 
 _ReleasedText::
+    text "See you later,"
+    line "@"
+    TX_RAM wBattleMonNick
+    text "..."
+	done
+
+_MonRanOffText::
 	text "@"
     TX_RAM wBattleMonNick
     text " has"
     line "ran off!"
+    prompt
 
-    para "See you later,"
+_ReleasedText2::
+    text "See you later,"
     line "@"
-    TX_RAM wBattleMonNick
+	TX_RAM wcd6d
     text "..."
+	done
+_MonRanOffText2::
+	text "@"
+	TX_RAM wcd6d
+    text " has"
+    line "ran off!"
     prompt
 
 _UseNextMonText::

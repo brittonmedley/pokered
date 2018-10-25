@@ -23,9 +23,10 @@ DoClearSaveDialogue2:
 	call RunDefaultPaletteCommand
 	call LoadFontTilePatterns
 	call LoadTextBoxTilePatterns
+	call EnableAutoTextBoxDrawing
 	ld hl, ClearSaveDataText2
 	call PrintText
-	callba ClearSAV; uncomment this line to go full-savage
+;	callba ClearSAV; uncomment this line to go full-savage
 	jp Init
 
 ClearSaveDataText:

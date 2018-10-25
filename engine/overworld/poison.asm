@@ -15,14 +15,14 @@ ApplyOutOfBattlePoisonDamage:
 .applyDamageLoop
 	ld a, [hl]
 	and (1 << PSN)
-	jr z, .nextMon2 ; not poisoned
+	jp z, .nextMon2 ; not poisoned
 	dec hl
 	dec hl
 	ld a, [hld]
 	ld b, a
 	ld a, [hli]
 	or b
-	jr z, .nextMon ; already fainted
+	jp z, .nextMon ; already fainted
 ; subtract 1 from HP
 	ld a, [hl]
 	dec a
@@ -32,12 +32,13 @@ ApplyOutOfBattlePoisonDamage:
 ; borrow 1 from upper byte of HP
 	dec [hl]
 	inc hl
-	jr .nextMon
+	jp .nextMon
 .noBorrow
 	ld a, [hli]
 	or [hl]
-	jr nz, .nextMon ; didn't faint from damage
+	jp nz, .nextMon ; didn't faint from damage
 ; the mon fainted from the damage
+;	call NuzlockePlayerMonFainted2
 	push hl
 	inc hl
 	inc hl
@@ -70,7 +71,7 @@ ApplyOutOfBattlePoisonDamage:
 	ld hl, wWhichPokemon
 	inc [hl]
 	pop hl
-	jr .applyDamageLoop
+	jp .applyDamageLoop
 .applyDamageLoopDone
 	ld hl, wPartyMon1Status
 	ld a, [wPartyCount]
@@ -93,10 +94,15 @@ ApplyOutOfBattlePoisonDamage:
 	ld a, SFX_POISONED
 	call PlaySound
 .skipPoisonEffectAndSound
+	ld a,[wPartyCount] ; if there are no mon left in party
+	and a
+	jr z, .skipAnyPartyAliveCheck
 	predef AnyPartyAlive
 	ld a, d
 	and a
 	jr nz, .noBlackOut
+.skipAnyPartyAliveCheck
+;	ld a, $01
 	call EnableAutoTextBoxDrawing
 	ld a, TEXT_BLACKED_OUT
 	ld [hSpriteIndexOrTextID], a

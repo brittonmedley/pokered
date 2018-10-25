@@ -15,8 +15,8 @@ AskName:
 ; Change code to force nick-name
 	ld hl, DoYouWantToNicknameText
 	call PrintText
-	coord hl, 14, 7
-	lb bc, 8, 15
+;	coord hl, 14, 7
+;	lb bc, 8, 15
 ;	ld a, TWO_OPTION_MENU
 ;	ld [wTextBoxID], a
 ;	call DisplayTextBoxID
@@ -24,15 +24,20 @@ AskName:
 ;	ld a, [wCurrentMenuItem]
 ;	and a
 ;	jr nz, .declinedNickname
-
+	push hl
 	ld a, [wUpdateSpritesEnabled]
 	push af
-	xor a
-	ld [wUpdateSpritesEnabled], a
-	push hl
 	ld a, NAME_MON_SCREEN
 	ld [wNamingScreenType], a
+.customName
+	xor a
+	ld [wUpdateSpritesEnabled], a
 	call DisplayNamingScreen
+	ld a, [wcf4b]
+	cp "@" ; start button
+	jr z, .customName
+
+
 	ld a, [wIsInBattle]
 	and a
 	jr nz, .inBattle
@@ -206,8 +211,12 @@ DisplayNamingScreen:
 	ret
 
 .pressedStart
+	ld a, [wNamingScreenNameLength]
+	cp $00 ; if the length of the name is zero
+	jr z, .tryAgain
 	ld a, 1
 	ld [wNamingScreenSubmitName], a
+.tryAgain
 	ret
 
 .pressedA

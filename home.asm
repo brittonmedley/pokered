@@ -100,6 +100,7 @@ SECTION "Header", ROM0 [$104]
 
 
 SECTION "Main", ROM0
+
 Start::
 	cp GBC
 	jr z, .gbc
@@ -1075,6 +1076,8 @@ DisplayTextID::
 	jp z, DisplayPlayerBlackedOutText
 	cp TEXT_REPEL_WORE_OFF
 	jp z, DisplayRepelWoreOffText
+;	cp TEXT_TEST_TEXT
+;	jp z, ReviveOptions
 	ld a, [wNumSprites]
 	ld e, a
 	ld a, [hSpriteIndexOrTextID] ; sprite ID
@@ -1252,8 +1255,18 @@ DisplaySafariGameOverText::
 	jp AfterDisplayingTextID
 
 DisplayPokemonFaintedText::
-	ld hl, PokemonFaintedText
+	ld hl, WillReleasePoisonText
 	call PrintText
+	ld hl, ReleasedText2
+	call PrintText
+	call WaitForSoundToFinish
+	ld a, [wcf91]
+	call PlayCry
+	ld hl, MonRanOffText2
+	call PrintText
+	xor a; set a to $00;
+	ld [wRemoveMonFromBox], a
+	call RemovePokemon
 	jp AfterDisplayingTextID
 
 PokemonFaintedText::
@@ -1263,10 +1276,16 @@ PokemonFaintedText::
 DisplayPlayerBlackedOutText::
 	ld hl, PlayerBlackedOutText
 	call PrintText
+;	ld b, SET_PAL_BATTLE_BLACK
+;	call RunPaletteCommand
 	ld a, [wd732]
 	res 5, a ; reset forced to use bike bit
 	ld [wd732], a
-	jp HoldTextDisplayOpen
+	jpba DoClearSaveDialogue2 ; usually handled by home/overworld.asm, line: 318
+						 	  ; but it won't work. Rather than learn bankswitching just
+						 	  ; do the shit here
+	jp DisplayTitleScreen
+;	jp HoldTextDisplayOpen
 
 PlayerBlackedOutText::
 	TX_FAR _PlayerBlackedOutText
@@ -1280,6 +1299,18 @@ DisplayRepelWoreOffText::
 RepelWoreOffText::
 	TX_FAR _RepelWoreOffText
 	db "@"
+
+WillReleasePoisonText::
+	TX_FAR _WillReleasePoisonText
+	db "@"
+
+ReleasedText2::
+    TX_FAR _ReleasedText2
+    db "@"
+
+MonRanOffText2::
+    TX_FAR _MonRanOffText2
+    db "@"
 
 INCLUDE "engine/menu/start_menu.asm"
 
@@ -1376,8 +1407,6 @@ AddItemToInventory::
 	ld [MBC1RomBank], a
 	pop bc
 	ret
-
-
 
 ; INPUT:
 ; [wListMenuID] = list menu ID
@@ -2102,7 +2131,6 @@ DisableWaitingAfterTextDisplay::
 ; 02: not able to be used right now, no extra menu displayed (only certain items use this)
 UseItem::
 	jpba UseItem_
-
 
 ; confirms the item toss and then tosses the item
 ; INPUT:
@@ -3198,7 +3226,6 @@ LoadScreenTilesFromBuffer2::
 	ld [H_AUTOBGTRANSFERENABLED], a
 	ret
 
-
 ; loads screen tiles stored in wTileMapBackup2 but leaves H_AUTOBGTRANSFERENABLED disabled
 LoadScreenTilesFromBuffer2DisableBGTransfer::
 	xor a
@@ -3208,7 +3235,6 @@ LoadScreenTilesFromBuffer2DisableBGTransfer::
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
 	call CopyData
 	ret
-
 
 SaveScreenTilesToBuffer1::
 	coord hl, 0, 0
@@ -4615,22 +4641,6 @@ Random::
 
 INCLUDE "home/predef.asm"
 
-
-;INCLUDE "engine/battle/check_mon_catchable.asm"
-;CheckMonCatchable::
-;	push bc
-;	ld a, [H_LOADEDROMBANK]
-;	push af
-;	ld a, BANK(CheckMonCatchable_)
-;	ld [H_LOADEDROMBANK], a
-;	ld [MBC2RomBank], a
-;	call CheckMonCatchable_
-;	pop bc
-;	ld a, b
-;	ld [H_LOADEDROMBANK], a
-;	ld [MBC2RomBank], a
-;	pop bc
-;	ret
 
 UpdateCinnabarGymGateTileBlocks::
 	jpba UpdateCinnabarGymGateTileBlocks_

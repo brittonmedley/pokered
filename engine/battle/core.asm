@@ -1056,159 +1056,30 @@ PlayBattleVictoryMusic:
 	call PlayMusic
 	jp Delay3
 
-INCLUDE "engine/menu/revive_menu.asm"
-INCLUDE "engine/menu/draw_revive_menu.asm"
-CheckPlayerRevives:
-	ResetEvent EVENT_HAS_REVIVE
-	ResetEvent EVENT_HAS_MAX_REVIVE
-	ResetEvent EVENT_HAS_BOTH_REVIVES
-
-;	ld [wRevives], a ; reset wRevives
-	ld b, REVIVE;%00110101  ; revive
-	call IsItemInBag
-	jr z, .checkMaxRevive ; no revives in bag
-	SetEvent EVENT_HAS_REVIVE
-;	ld a, [wRevives]
-;	set 0, a ; revive in bag -> set a0
-;	ld [wRevives], a
-;	jp .checkMaxRevive
-.checkMaxRevive
- 	ld b, MAX_REVIVE	;%10110101  ; max revive
-	call IsItemInBag
- 	jp z, .done
-	SetEvent EVENT_HAS_MAX_REVIVE
-	CheckEvent EVENT_HAS_REVIVE
-	jr z, .done
-	SetEvent EVENT_HAS_BOTH_REVIVES
-; 	ld a, [wRevives]
-;	set 1, a ; revive in bag -> set a1
-;	ld [wRevives], a
-.done
-ret
 
 HandlePlayerMonFainted:
 	ld a, 1
 	ld [wInHandlePlayerMonFainted], a
 	call RemoveFaintedPlayerMon
 	call SaveScreenTilesToBuffer1 ;use this screen when putting up new pokemon
+; if its the first battle
 	ld a, [wCurMap]
 	cp OAKS_LAB
-	jp z, .contHPMF
-	call CheckPlayerRevives
-	CheckEvent EVENT_HAS_REVIVE
-	jr nz, .canRevive
-;	ld a, [wRevives]
-;	cp $00
-	CheckEvent EVENT_HAS_MAX_REVIVE
-	jr nz, .canRevive ; there are revives
-	ld hl, NoRevivesText
-	call PrintText
-	call TextScriptEnd
-	xor a
-	jr z, .noRevivesReleasePokemon
-.releasePokemon
-	ld hl, WantReleaseText
-	call PrintText
-	call TextScriptEnd
- 	jp .displayYesNoBox
-.displayYesNoBox
-	coord hl, 13, 9
-	lb bc, 10, 14
-	ld a, TWO_OPTION_MENU
-	ld [wTextBoxID], a
-	call DisplayTextBoxID
-	ld a, [wMenuExitMethod]
-	cp CHOSE_SECOND_ITEM ; did the player choose NO?
-	jr z, .canRevive ; if the player chose NO, ask again
-	ld hl, ReleasedText
-	call PrintText
-	call TextScriptEnd
-	and a
-	xor a; set a to $00;
-	ld [wRemoveMonFromBox], a
-	call RemovePokemon
-	jp .contHPMF
-.noRevivesReleasePokemon
-	ld hl, WantReleaseText
+	jp z, .skipRelease
+	ld hl, WillReleaseText
 	call PrintText
 	call TextScriptEnd
 	ld hl, ReleasedText
 	call PrintText
 	call TextScriptEnd
-	and a
+;	and a
 	xor a; set a to $00;
 	ld [wRemoveMonFromBox], a
 	call RemovePokemon
-	jp .contHPMF
-.canRevive
-	ld hl, UseRevivePromptText
-	call PrintText
-	call TextScriptEnd
-	jp .displayYesNoBox2
-.displayYesNoBox2
-	coord hl, 13, 9
-	lb bc, 10, 14
-	ld a, TWO_OPTION_MENU
-	ld [wTextBoxID], a
-	call DisplayTextBoxID
-	ld a, [wMenuExitMethod]
-	cp CHOSE_SECOND_ITEM ; did the player choose NO?
-	jr z, .releasePokemon ; if the player chose NO, ask to release the pokemon
-;	ld a, [wRevives]
-;	cp $01 ; player only has revive
-;	jp z, .useRevive
-	CheckEvent EVENT_HAS_BOTH_REVIVES
-	jr nz, .whichRevive
-	CheckEvent EVENT_HAS_REVIVE
-	jr nz, .useRevive
-	ld hl, UseMaxReviveText
-	call PrintText
-	call TextScriptEnd
-	jp .displayYesNoBox4
-.displayYesNoBox4
-	coord hl, 13, 9
-	lb bc, 10, 14
-	ld a, TWO_OPTION_MENU
-	ld [wTextBoxID], a
-	call DisplayTextBoxID
-	ld a, [wMenuExitMethod]
-	cp CHOSE_SECOND_ITEM ; did the player choose NO?
-	jr z, .canRevive ; if the player chose NO, ask to revive the pokemon again
-	call UseMaxRevive
-	jr .contHPMF
-;	cp $02 ; player only has max revive
-;	jp z, .useMaxRevive
-; player has both revives //FALLTHROUGH
-; the player chose to heal
-; choose revive or max revive
-;.whichRevive
-.whichRevive
-	ld hl, UseWhichReviveText
-	call PrintText
-	call TextScriptEnd
-	callab DisplayReviveMenu
-	CheckEvent EVENT_CANCEL_REVIVE
-	;ld a, [wUsedRevive]
-	;cp $00
-	jr nz, .canRevive ; did the player hit B
-	jr .contHPMF
-.useRevive
-	ld hl, UseReviveText
-	call PrintText
-	call TextScriptEnd
-	jp .displayYesNoBox3
-.displayYesNoBox3
-	coord hl, 13, 9
-	lb bc, 10, 14
-	ld a, TWO_OPTION_MENU
-	ld [wTextBoxID], a
-	call DisplayTextBoxID
-	ld a, [wMenuExitMethod]
-	cp CHOSE_SECOND_ITEM ; did the player choose NO?
-	jp z, .canRevive ; if the player chose NO, ask to release the pokemon
-	call UseRevive
+.skipRelease
+;	call NuzlockePlayerMonFainted
 ;	jp .contHPMF
-.contHPMF
+;.contHPMF
 	call AnyPartyAlive     ; test if any more mons are alive
 	ld a, d
 	and a
@@ -1306,19 +1177,19 @@ UseMaxReviveText::
 	TX_FAR _UseMaxReviveText
 	db "@"
 
-NoRevivesText:
+NoRevivesText::
 	TX_FAR _NoRevivesText
 	db "@"
 
-UseWhichReviveText:
+UseWhichReviveText::
 	TX_FAR _UseWhichReviveText
 	db"@"
 
-WantReleaseText:
-	TX_FAR _WantReleaseText
+WillReleaseText::
+	TX_FAR _WillReleaseText
 	db "@"
 
-ReleasedText:
+ReleasedText::
     TX_FAR _ReleasedText
     db "@"
 
@@ -1441,14 +1312,25 @@ HandlePlayerBlackOut:
 	res 5, a
 	ld [wd732], a
 ;	call ClearScreen
-	callba DoClearSaveDialogue2
+	jpba DoClearSaveDialogue2
 	jp DisplayTitleScreen
-	scf
-	ret
+;	scf
+;	ret
 .firstBattleLose
 	ld hl, FirstBattleLoseText
 	call PrintText
-	call UseMaxRevive
+
+; only mon in party is mon1
+	ld hl, wPartyMon1MaxHP
+	ld de, wPartyMon1HP
+	ld a, [hli]
+	ld [de], a
+	ld [wHPBarNewHP+1], a
+	inc de
+	ld a, [hl]
+	ld [de], a
+	ld [wHPBarNewHP], a
+;	call UseMaxRevive
 	ret
 
 FirstBattleLoseText:

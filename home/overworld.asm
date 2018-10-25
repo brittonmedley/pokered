@@ -317,7 +317,7 @@ OverworldLoopLessDelay::
 	predef ApplyOutOfBattlePoisonDamage ; also increment daycare mon exp
 	ld a, [wOutOfBattleBlackout]
 	and a
-	jp nz, HandleBlackOut ; if all pokemon fainted
+	jp nz, HandlePlayerBlackOut ; if all pokemon fainted
 .newBattle
 	call NewBattle
 	ld hl, wd736

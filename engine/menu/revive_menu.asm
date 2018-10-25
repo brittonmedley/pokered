@@ -127,7 +127,7 @@ UseMaxRevive:
 	ld hl, wPartyMon1HP
 	ld bc, wPartyMon2 - wPartyMon1
 	ld a, [wWhichPokemon]
-	call AddNTimes						; hl is now wPartyMonXMaxHP, X = wWichPokemon
+	call AddNTimes						; hl is now wPartyMonXHP, X = wWichPokemon
 	pop af
 	inc hl
 	ld [hl], a
