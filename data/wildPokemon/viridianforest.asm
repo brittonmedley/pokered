@@ -1,25 +1,25 @@
 ForestMons:
 	db $08
 	IF DEF(_RED)
-		db 4,WEEDLE
-		db 5,KAKUNA
-		db 3,WEEDLE
-		db 5,WEEDLE
-		db 4,KAKUNA
-		db 6,KAKUNA
-		db 4,METAPOD
-		db 3,CATERPIE
+		db 4,MEOWTH
+		db 5,SHELLDER
+		db 3,MEOWTH
+		db 5,MEOWTH
+		db 4,SHELLDER
+		db 6,SHELLDER
+		db 4,CHARMELEON
+		db 3,SLOWPOKE
 	ENDC
 	IF DEF(_BLUE)
-		db 4,CATERPIE
-		db 5,METAPOD
-		db 3,CATERPIE
-		db 5,CATERPIE
-		db 4,METAPOD
-		db 6,METAPOD
-		db 4,KAKUNA
-		db 3,WEEDLE
+		db 4,SLOWPOKE
+		db 5,CHARMELEON
+		db 3,SLOWPOKE
+		db 5,SLOWPOKE
+		db 4,CHARMELEON
+		db 6,CHARMELEON
+		db 4,SHELLDER
+		db 3,MEOWTH
 	ENDC
-	db 3,PIKACHU
-	db 5,PIKACHU
+	db 3,BEEDRILL
+	db 5,BEEDRILL
 	db $00

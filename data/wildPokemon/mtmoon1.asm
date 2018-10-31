@@ -1,13 +1,13 @@
 MoonMons1:
 	db $0A
-	db 8,ZUBAT
-	db 7,ZUBAT
-	db 9,ZUBAT
-	db 8,GEODUDE
-	db 6,ZUBAT
-	db 10,ZUBAT
-	db 10,GEODUDE
+	db 8,DIGLETT
+	db 7,DIGLETT
+	db 9,DIGLETT
+	db 8,LAPRAS
+	db 6,DIGLETT
+	db 10,DIGLETT
+	db 10,LAPRAS
 	db 8,PARAS
-	db 11,ZUBAT
-	db 8,CLEFAIRY
+	db 11,DIGLETT
+	db 8,PIKACHU
 	db $00

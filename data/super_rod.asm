@@ -40,61 +40,61 @@ SuperRodData:
 ; number of monsters, followed by level/monster pairs
 FishingGroup1:
 	db 2
-	db 15,TENTACOOL
-	db 15,POLIWAG
+	db 15,HYPNO
+	db 15,PIDGEOTTO
 
 FishingGroup2:
 	db 2
-	db 15,GOLDEEN
-	db 15,POLIWAG
+	db 15,ZUBAT
+	db 15,PIDGEOTTO
 
 FishingGroup3:
 	db 3
-	db 15,PSYDUCK
-	db 15,GOLDEEN
-	db 15,KRABBY
+	db 15,METAPOD
+	db 15,ZUBAT
+	db 15,KADABRA
 
 FishingGroup4:
 	db 2
-	db 15,KRABBY
-	db 15,SHELLDER
+	db 15,KADABRA
+	db 15,MANKEY
 
 FishingGroup5:
 	db 2
-	db 23,POLIWHIRL
-	db 15,SLOWPOKE
+	db 23,PONYTA
+	db 15,DROWZEE
 
 FishingGroup6:
 	db 4
-	db 15,DRATINI
-	db 15,KRABBY
-	db 15,PSYDUCK
-	db 15,SLOWPOKE
+	db 15,DODRIO
+	db 15,KADABRA
+	db 15,METAPOD
+	db 15,DROWZEE
 
 FishingGroup7:
 	db 4
-	db 5,TENTACOOL
-	db 15,KRABBY
-	db 15,GOLDEEN
-	db 15,MAGIKARP
+	db 5,HYPNO
+	db 15,KADABRA
+	db 15,ZUBAT
+	db 15,ONIX
 
 FishingGroup8:
 	db 4
-	db 15,STARYU
-	db 15,HORSEA
-	db 15,SHELLDER
-	db 15,GOLDEEN
+	db 15,GOLEM
+	db 15,BEEDRILL
+	db 15,MANKEY
+	db 15,ZUBAT
 
 FishingGroup9:
 	db 4
-	db 23,SLOWBRO
-	db 23,SEAKING
-	db 23,KINGLER
-	db 23,SEADRA
+	db 23,OMASTAR
+	db 23,WEEZING
+	db 23,SANDSLASH
+	db 23,KABUTOPS
 
 FishingGroup10:
 	db 4
-	db 23,SEAKING
-	db 15,KRABBY
-	db 15,GOLDEEN
-	db 15,MAGIKARP
+	db 23,WEEZING
+	db 15,KADABRA
+	db 15,ZUBAT
+	db 15,ONIX

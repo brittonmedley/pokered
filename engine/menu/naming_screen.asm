@@ -24,14 +24,15 @@ AskName:
 ;	ld a, [wCurrentMenuItem]
 ;	and a
 ;	jr nz, .declinedNickname
-	push hl
+
 	ld a, [wUpdateSpritesEnabled]
 	push af
-	ld a, NAME_MON_SCREEN
-	ld [wNamingScreenType], a
-.customName
 	xor a
 	ld [wUpdateSpritesEnabled], a
+	push hl
+.customName
+	ld a, NAME_MON_SCREEN
+	ld [wNamingScreenType], a
 	call DisplayNamingScreen
 	ld a, [wcf4b]
 	cp "@" ; start button
@@ -216,7 +217,11 @@ DisplayNamingScreen:
 	jr z, .tryAgain
 	ld a, 1
 	ld [wNamingScreenSubmitName], a
+	jr .success
 .tryAgain
+	xor a
+	ld [wNamingScreenSubmitName], a
+.success
 	ret
 
 .pressedA

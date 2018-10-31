@@ -1,24 +1,24 @@
 Route2Mons:
 	db $19
-	db 3,RATTATA
-	db 3,PIDGEY
-	db 4,PIDGEY
-	db 4,RATTATA
-	db 5,PIDGEY
+	db 3,GLOOM
+	db 3,PARASECT
+	db 4,PARASECT
+	db 4,GLOOM
+	db 5,PARASECT
 	IF DEF(_RED)
-		db 3,WEEDLE
+		db 3,MEOWTH
 	ENDC
 	IF DEF(_BLUE)
-		db 3,CATERPIE
+		db 3,SLOWPOKE
 	ENDC
-	db 2,RATTATA
-	db 5,RATTATA
+	db 2,GLOOM
+	db 5,GLOOM
 	IF DEF(_RED)
-		db 4,WEEDLE
-		db 5,WEEDLE
+		db 4,MEOWTH
+		db 5,MEOWTH
 	ENDC
 	IF DEF(_BLUE)
-		db 4,CATERPIE
-		db 5,CATERPIE
+		db 4,SLOWPOKE
+		db 5,SLOWPOKE
 	ENDC
 	db $00

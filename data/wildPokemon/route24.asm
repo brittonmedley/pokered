@@ -1,26 +1,26 @@
 Route24Mons:
 	db $19
 	IF DEF(_RED)
-		db 7,WEEDLE
-		db 8,KAKUNA
-		db 12,PIDGEY
-		db 12,ODDISH
-		db 13,ODDISH
+		db 7,MEOWTH
+		db 8,SHELLDER
+		db 12,PARASECT
+		db 12,GOLEM
+		db 13,GOLEM
 		db 10,ABRA
-		db 14,ODDISH
-		db 13,PIDGEY
+		db 14,GOLEM
+		db 13,PARASECT
 		db 8,ABRA
 		db 12,ABRA
 	ENDC
 	IF DEF(_BLUE)
-		db 7,CATERPIE
-		db 8,METAPOD
-		db 12,PIDGEY
-		db 12,BELLSPROUT
-		db 13,BELLSPROUT
+		db 7,SLOWPOKE
+		db 8,CHARMELEON
+		db 12,PARASECT
+		db 12,GASTLY
+		db 13,GASTLY
 		db 10,ABRA
-		db 14,BELLSPROUT
-		db 13,PIDGEY
+		db 14,GASTLY
+		db 13,PARASECT
 		db 8,ABRA
 		db 12,ABRA
 	ENDC
